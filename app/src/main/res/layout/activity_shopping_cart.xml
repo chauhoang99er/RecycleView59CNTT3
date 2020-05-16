@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".ShoppingCartActivity">
+
+    <TextView
+        android:id="@+id/textView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textSize="30dp"
+        android:textColor="@color/maudo"
+        android:text="Thông tin giỏ hàng" />
+
+    <TextView
+        android:id="@+id/txtCartInfor"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textAlignment="textEnd"
+        android:textSize="20dp"
+        android:text="TextView" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/btnSubmit"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:layout_marginLeft="30dp"
+            android:layout_marginRight="30dp"
+            android:text="MUA HÀNG" />
+
+        <Button
+            android:id="@+id/btnClear"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:layout_marginLeft="30dp"
+            android:layout_marginRight="30dp"
+            android:text="XÓA GIỎ HÀNG" />
+    </LinearLayout>
+
+</LinearLayout>
