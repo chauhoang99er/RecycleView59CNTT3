@@ -44,4 +44,12 @@ public class CartController extends Application implements ICartController {
     {
         shoppingCart.clear();
     }
+
+    @Override
+    public String getCartQuantity()
+    {
+        if(shoppingCart.size()>0)
+            return new Integer(shoppingCart.size()).toString();
+        return "";
+    }
 }

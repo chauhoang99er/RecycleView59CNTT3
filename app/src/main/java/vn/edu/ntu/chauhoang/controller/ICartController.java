@@ -10,4 +10,5 @@ public interface ICartController
     public boolean addToShoppingCart(Product p);
     public ArrayList<Product> getShoppingCart();
     public void clearShoppingCart();
+    public String getCartQuantity();
 }

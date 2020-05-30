@@ -15,7 +15,7 @@ import vn.edu.ntu.chauhoang.controller.ICartController;
 import vn.edu.ntu.chauhoang.model.Product;
 
 public class ShoppingCartActivity extends AppCompatActivity {
-    TextView txtCartInfo;
+    TextView txtCartInfo, txtTotal;
     Button btnSubmit, btnClear;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,6 +31,7 @@ public class ShoppingCartActivity extends AppCompatActivity {
         txtCartInfo = findViewById(R.id.txtCartInfor);
         btnSubmit = findViewById(R.id.btnSubmit);
         btnClear = findViewById(R.id.btnClear);
+        txtTotal = findViewById(R.id.txtTotal);
         viewCartInfor();
     }
 
@@ -46,6 +47,7 @@ public class ShoppingCartActivity extends AppCompatActivity {
                 Toast.makeText(ShoppingCartActivity.this,
                         "Giỏ hàng đã được xóa", Toast.LENGTH_SHORT).show();
                 txtCartInfo.setText("Không có mặt hàng này trong giỏ hàng");
+                txtTotal.setText("Giá tiền = 0");
 //                if (controller.getShoppingCart().size() > 0)
 //                {
 //                    confirm();
@@ -54,23 +56,31 @@ public class ShoppingCartActivity extends AppCompatActivity {
 //                            "Không có mặt hàng này trong giỏ hàng", Toast.LENGTH_SHORT).show();
             }
         });
-    }
 
-    private void confirm()
-    {
-        Intent intent = new Intent(this, ConfirmActivity.class);
-        startActivity(intent);
+        btnSubmit.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ICartController controller = (ICartController) ShoppingCartActivity.this.getApplication();
+                txtCartInfo.setText("Cám ơn quý khách đã mua hàng!");
+                Toast.makeText(ShoppingCartActivity.this,
+                        "Xác nhận mua hàng",
+                        Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
     private void viewCartInfor()
     {
+        int s = 0;
         ICartController controller = (ICartController) ShoppingCartActivity.this.getApplication();
         ArrayList<Product> listProducts = controller.getShoppingCart();
         StringBuilder builder = new StringBuilder();
         for(Product p: listProducts)
         {
             builder.append(p.getName() + "\t\t\t" + p.getPrice()+ " vnd\n");
+            s += p.getPrice();
         }
+        txtTotal.setText("Tổng tiền: " + new Integer(s).toString() + " vnd");
         if(builder.toString().length()>0)
             txtCartInfo.setText(builder.toString());
         else

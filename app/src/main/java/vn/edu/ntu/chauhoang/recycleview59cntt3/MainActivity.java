@@ -9,6 +9,7 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -24,12 +25,14 @@ import java.util.ArrayList;
 import vn.edu.ntu.chauhoang.controller.ICartController;
 import vn.edu.ntu.chauhoang.model.Product;
 
-public class MainActivity extends AppCompatActivity
-{
+public class MainActivity extends AppCompatActivity implements View.OnClickListener {
     ArrayList<Product> listProduct;
     ProductAdapter adapter;
     RecyclerView rvListProduct;
-    ActionBar toolbar;
+    ICartController controller;
+    ImageView imvCart;
+    TextView txtQuantity;
+    //ActionBar toolbar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,53 +42,70 @@ public class MainActivity extends AppCompatActivity
         addView();
     }
 
-    private void addView()
-    {
+    @Override
+    protected void onStart() {
+        super.onStart();
+        adapter.notifyDataSetChanged();
+        if (txtQuantity != null)
+            txtQuantity.setText(controller.getCartQuantity());
+    }
+
+    private void addView() {
         rvListProduct = findViewById(R.id.rvListProduct);
         rvListProduct.setLayoutManager(new LinearLayoutManager(this)); //this là mainactivity
-        ICartController controller = (ICartController) getApplication();
+        controller = (ICartController) getApplication();
         listProduct = controller.getListProduct();
         adapter = new ProductAdapter(listProduct);
         rvListProduct.setAdapter(adapter);
     }
 
     //Tạo menu
-
     @Override
-    public boolean onCreateOptionsMenu(Menu menu)
-    {
+    public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.mnu_cart, menu);
+
+        MenuItem cartMenu = menu.findItem(R.id.mnu_cart);
+        txtQuantity = cartMenu.getActionView().findViewById(R.id.txtQuantity);
+        imvCart = cartMenu.getActionView().findViewById(R.id.imvCart);
+
+        txtQuantity.setText(controller.getCartQuantity());
+        imvCart.setOnClickListener(this);
+        txtQuantity.setOnClickListener(this);
+
         return super.onCreateOptionsMenu(menu);
     }
+
     //Chọn ra item
     @Override
-    public boolean onOptionsItemSelected(@NonNull MenuItem item)
-    {
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         int id = item.getItemId();
-        switch (id)
-        {
-            case R.id.mnu_cart:
-                callShoppingCartActivity();
-                break;
+        switch (id) {
+//            case R.id.mnu_cart:
+//                callShoppingCartActivity();
+//                break;
             case R.id.mnu_close:
-            finish();
+                finish();
         }
         return super.onOptionsItemSelected(item);
     }
 
-    private void callShoppingCartActivity()
-    {
+    private void callShoppingCartActivity() {
         Intent intent = new Intent(this, ShoppingCartActivity.class);
         startActivity(intent);
     }
 
+    @Override
+    public void onClick(View v) {
+        callShoppingCartActivity();
+    }
+
     //Lớp cào đặt cho việc hiển thị 1 Product
-    private class ProductViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener
-    {
+    private class ProductViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         TextView txtName, txtPrice, txtDesc;
         ImageView imBtnCart;
         Product p;
+
         public ProductViewHolder(@NonNull View itemView) {
             super(itemView);
             txtName = this.itemView.findViewById(R.id.txtName);
@@ -95,8 +115,8 @@ public class MainActivity extends AppCompatActivity
             //Sự kiện nhấn vào giỏ hàng
             imBtnCart.setOnClickListener(this);
         }
-        public void bind(Product p)
-        {
+
+        public void bind(Product p) {
             this.p = p;
             txtName.setText(p.getName());
             txtPrice.setText(new Integer(p.getPrice()).toString());
@@ -106,22 +126,25 @@ public class MainActivity extends AppCompatActivity
         }
 
         @Override
-        public void onClick(View v)
-        {
+        public void onClick(View v) {
             ICartController controller = (ICartController) getApplication();
-            if(!controller.addToShoppingCart(p))
+            if (!controller.addToShoppingCart(p)) {
                 Toast.makeText(MainActivity.this,
-                        "SP "+ p.getName() + " đã có trong giỏ hàng",
+                        "SP " + p.getName() + " đã có trong giỏ hàng",
                         Toast.LENGTH_SHORT).show();
-            else
+
+            } else {
+                txtQuantity.setText(controller.getCartQuantity());
                 Toast.makeText(MainActivity.this,
-                        "Đã thêm sp "+ p.getName()+ " vào giỏ hàng",
+                        "Đã thêm sp " + p.getName() + " vào giỏ hàng",
                         Toast.LENGTH_SHORT).show();
+            }
+
         }
     }
+
     // Lớp adapter kết nối RecycleView và dữ liệu
-    private  class  ProductAdapter extends RecyclerView.Adapter<ProductViewHolder>
-    {
+    private class ProductAdapter extends RecyclerView.Adapter<ProductViewHolder> {
         ArrayList<Product> listProduct;
 
         public ProductAdapter(ArrayList<Product> listProduct) {
@@ -141,14 +164,12 @@ public class MainActivity extends AppCompatActivity
 
         //Kêt nối 1 mục dữ liệu trong danh sách với một ViewHolder
         @Override
-        public void onBindViewHolder(@NonNull ProductViewHolder holder, int position)
-        {
+        public void onBindViewHolder(@NonNull ProductViewHolder holder, int position) {
             holder.bind(listProduct.get(position));
         }
 
         @Override
-        public int getItemCount()
-        {
+        public int getItemCount() {
             return listProduct.size();
         }
     }

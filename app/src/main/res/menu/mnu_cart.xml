@@ -4,8 +4,8 @@
 
     <item android:id="@+id/mnu_cart"
         android:title="Item"
-        android:icon="@drawable/ic_action_add_cartnoneplus"
-        app:showAsAction="ifRoom"
+        app:actionLayout="@layout/cart_layout"
+        app:showAsAction="always|withText"
         />
     <item android:id="@+id/mnu_close"
         android:title="Thoát"
